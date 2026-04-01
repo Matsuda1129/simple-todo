@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx expo install @react-native-async-storage/async-storage)",
+      "Bash(npx expo start)",
+      "Bash(npx expo install expo-updates)",
+      "WebFetch(domain:faq.altstore.io)"
+    ]
+  }
+}
