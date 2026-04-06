@@ -1,5 +1,5 @@
 {
-  "name": "takuya's Apps",
+  "name": "simple-todo",
   "identifier": "com.zql4r3fr3f.altstore",
   "sourceURL": "https://matsuda1129.github.io/simple-todo/altstore-source.json",
   "apps": [
@@ -7,7 +7,7 @@
       "name": "simple-todo",
       "bundleIdentifier": "com.zql4r3fr3f.simpletodo",
       "marketplaceID": "6761449776",
-      "developerName": "takuya",
+      "developerName": "shibakiri",
       "localizedDescription": "A simple TODO app.",
       "iconURL": "https://raw.githubusercontent.com/Matsuda1129/simple-todo/main/assets/icon.png",
       "appPermissions": {
