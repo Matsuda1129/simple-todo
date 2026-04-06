@@ -10,6 +10,10 @@
       "developerName": "takuya",
       "localizedDescription": "A simple TODO app.",
       "iconURL": "https://raw.githubusercontent.com/Matsuda1129/simple-todo/main/assets/icon.png",
+      "appPermissions": {
+        "entitlements": [],
+        "privacy": []
+      },
       "versions": [
         {
           "version": "1.0.0",
