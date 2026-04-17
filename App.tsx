@@ -131,7 +131,7 @@ export default function App() {
     <SafeAreaView style={styles.container}>
       <StatusBar style="dark" />
       <View style={styles.header}>
-        <Text style={styles.title}>Todo</Text>
+        <Text style={styles.title}>Simple Todo</Text>
         {todos.length > 0 && (
           <Text style={styles.counter}>
             {completedCount}/{todos.length} 完了
