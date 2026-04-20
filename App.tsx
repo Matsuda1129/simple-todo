@@ -1,5 +1,5 @@
-import { StatusBar } from 'expo-status-bar';
-import { useCallback, useEffect, useState } from 'react';
+import { StatusBar } from "expo-status-bar";
+import { useCallback, useEffect, useState } from "react";
 import {
   Alert,
   FlatList,
@@ -11,11 +11,12 @@ import {
   Text,
   TextInput,
   View,
-} from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import * as Updates from 'expo-updates';
+} from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as Updates from "expo-updates";
+import Constants from "expo-constants";
 
-const STORAGE_KEY = '@simple_todo_items';
+const STORAGE_KEY = "@simple_todo_items";
 
 interface Todo {
   id: string;
@@ -26,8 +27,8 @@ interface Todo {
 
 export default function App() {
   const [todos, setTodos] = useState<Todo[]>([]);
-  const [inputText, setInputText] = useState('');
-  const [updateStatus, setUpdateStatus] = useState('確認中...');
+  const [inputText, setInputText] = useState("");
+  const [updateStatus, setUpdateStatus] = useState("確認中...");
 
   useEffect(() => {
     loadTodos();
@@ -37,15 +38,15 @@ export default function App() {
   const checkForUpdates = async () => {
     try {
       if (__DEV__) {
-        setUpdateStatus('開発モード');
+        setUpdateStatus("開発モード");
         return;
       }
-      setUpdateStatus(`現在ID: ${Updates.updateId?.slice(0, 8) ?? 'なし'}`);
+      setUpdateStatus(`現在ID: ${Updates.updateId?.slice(0, 8) ?? "なし"}`);
       const result = await Updates.checkForUpdateAsync();
       if (result.isAvailable) {
-        setUpdateStatus('更新あり。DL中...');
+        setUpdateStatus("更新あり。DL中...");
         await Updates.fetchUpdateAsync();
-        setUpdateStatus('DL完了。再起動で反映');
+        setUpdateStatus("DL完了。再起動で反映");
       } else {
         setUpdateStatus((prev) => `${prev} / 最新`);
       }
@@ -78,7 +79,7 @@ export default function App() {
     const updated = [newTodo, ...todos];
     setTodos(updated);
     saveTodos(updated);
-    setInputText('');
+    setInputText("");
     Keyboard.dismiss();
   }, [inputText, todos]);
 
@@ -95,17 +96,17 @@ export default function App() {
 
   const deleteTodo = useCallback(
     (id: string) => {
-      if (Platform.OS === 'web') {
+      if (Platform.OS === "web") {
         const updated = todos.filter((todo) => todo.id !== id);
         setTodos(updated);
         saveTodos(updated);
         return;
       }
-      Alert.alert('削除', 'このTodoを削除しますか？', [
-        { text: 'キャンセル', style: 'cancel' },
+      Alert.alert("削除", "このTodoを削除しますか？", [
+        { text: "キャンセル", style: "cancel" },
         {
-          text: '削除',
-          style: 'destructive',
+          text: "削除",
+          style: "destructive",
           onPress: () => {
             const updated = todos.filter((todo) => todo.id !== id);
             setTodos(updated);
@@ -130,7 +131,10 @@ export default function App() {
             {item.completed && <Text style={styles.checkmark}>✓</Text>}
           </View>
           <Text
-            style={[styles.todoText, item.completed && styles.todoTextCompleted]}
+            style={[
+              styles.todoText,
+              item.completed && styles.todoTextCompleted,
+            ]}
             numberOfLines={2}
           >
             {item.text}
@@ -154,9 +158,11 @@ export default function App() {
     <SafeAreaView style={styles.container}>
       <StatusBar style="dark" />
       <View style={styles.header}>
-        <View>
+        <View style={styles.headerInfo}>
           <Text style={styles.title}>Simple Todo</Text>
-          <Text style={styles.updateStatus}>{updateStatus}</Text>
+          <Text style={styles.updateStatus}>version: {Constants.expoConfig?.version}</Text>
+          <Text style={styles.updateStatus}>build: {Constants.expoConfig?.ios?.buildNumber}</Text>
+          <Text style={styles.updateStatus}>status: {updateStatus}</Text>
         </View>
         {todos.length > 0 && (
           <Text style={styles.counter}>
@@ -176,7 +182,10 @@ export default function App() {
           returnKeyType="done"
         />
         <Pressable
-          style={[styles.addButton, !inputText.trim() && styles.addButtonDisabled]}
+          style={[
+            styles.addButton,
+            !inputText.trim() && styles.addButtonDisabled,
+          ]}
           onPress={addTodo}
           disabled={!inputText.trim()}
         >
@@ -188,7 +197,9 @@ export default function App() {
         <View style={styles.emptyState}>
           <Text style={styles.emptyIcon}>📝</Text>
           <Text style={styles.emptyText}>Todoはまだありません</Text>
-          <Text style={styles.emptySubtext}>上の入力欄からTodoを追加しましょう</Text>
+          <Text style={styles.emptySubtext}>
+            上の入力欄からTodoを追加しましょう
+          </Text>
         </View>
       ) : (
         <FlatList
@@ -206,32 +217,37 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: "#f5f5f5",
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     paddingHorizontal: 20,
     paddingTop: 16,
     paddingBottom: 12,
   },
   title: {
     fontSize: 32,
-    fontWeight: '700',
-    color: '#1a1a1a',
+    fontWeight: "700",
+    color: "#1a1a1a",
   },
   counter: {
     fontSize: 14,
-    color: '#888',
+    color: "#888",
+  },
+  headerInfo: {
+    flex: 1,
+    marginRight: 12,
   },
   updateStatus: {
     fontSize: 10,
-    color: '#aaa',
+    color: "#aaa",
     marginTop: 2,
+    flexWrap: "wrap",
   },
   inputContainer: {
-    flexDirection: 'row',
+    flexDirection: "row",
     paddingHorizontal: 20,
     paddingBottom: 16,
     gap: 10,
@@ -239,48 +255,48 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     height: 48,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     borderRadius: 12,
     paddingHorizontal: 16,
     fontSize: 16,
-    color: '#1a1a1a',
+    color: "#1a1a1a",
     borderWidth: 1,
-    borderColor: '#e0e0e0',
+    borderColor: "#e0e0e0",
   },
   addButton: {
     height: 48,
     paddingHorizontal: 20,
-    backgroundColor: '#007AFF',
+    backgroundColor: "#007AFF",
     borderRadius: 12,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   addButtonDisabled: {
-    backgroundColor: '#b0d4ff',
+    backgroundColor: "#b0d4ff",
   },
   addButtonText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   list: {
     paddingHorizontal: 20,
     paddingBottom: 20,
   },
   todoItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#fff',
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#fff",
     borderRadius: 12,
     padding: 14,
     marginBottom: 8,
     borderWidth: 1,
-    borderColor: '#e8e8e8',
+    borderColor: "#e8e8e8",
   },
   todoContent: {
     flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 12,
   },
   checkbox: {
@@ -288,45 +304,45 @@ const styles = StyleSheet.create({
     height: 24,
     borderRadius: 12,
     borderWidth: 2,
-    borderColor: '#ccc',
-    justifyContent: 'center',
-    alignItems: 'center',
+    borderColor: "#ccc",
+    justifyContent: "center",
+    alignItems: "center",
   },
   checkboxChecked: {
-    backgroundColor: '#007AFF',
-    borderColor: '#007AFF',
+    backgroundColor: "#007AFF",
+    borderColor: "#007AFF",
   },
   checkmark: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 14,
-    fontWeight: '700',
+    fontWeight: "700",
   },
   todoText: {
     flex: 1,
     fontSize: 16,
-    color: '#1a1a1a',
+    color: "#1a1a1a",
     lineHeight: 22,
   },
   todoTextCompleted: {
-    textDecorationLine: 'line-through',
-    color: '#aaa',
+    textDecorationLine: "line-through",
+    color: "#aaa",
   },
   deleteButton: {
     width: 32,
     height: 32,
     borderRadius: 16,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   deleteText: {
     fontSize: 22,
-    color: '#ccc',
-    fontWeight: '300',
+    color: "#ccc",
+    fontWeight: "300",
   },
   emptyState: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     paddingBottom: 80,
   },
   emptyIcon: {
@@ -335,12 +351,12 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     fontSize: 18,
-    color: '#888',
-    fontWeight: '500',
+    color: "#888",
+    fontWeight: "500",
   },
   emptySubtext: {
     fontSize: 14,
-    color: '#aaa',
+    color: "#aaa",
     marginTop: 6,
   },
 });

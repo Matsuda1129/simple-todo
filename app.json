@@ -15,6 +15,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.zql4r3fr3f.simpletodo",
+      "buildNumber": "3",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
       }
