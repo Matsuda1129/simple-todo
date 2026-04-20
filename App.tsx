@@ -13,6 +13,7 @@ import {
   View,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as Updates from 'expo-updates';
 
 const STORAGE_KEY = '@simple_todo_items';
 
@@ -26,10 +27,32 @@ interface Todo {
 export default function App() {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [inputText, setInputText] = useState('');
+  const [updateStatus, setUpdateStatus] = useState('確認中...');
 
   useEffect(() => {
     loadTodos();
+    checkForUpdates();
   }, []);
+
+  const checkForUpdates = async () => {
+    try {
+      if (__DEV__) {
+        setUpdateStatus('開発モード');
+        return;
+      }
+      setUpdateStatus(`現在ID: ${Updates.updateId?.slice(0, 8) ?? 'なし'}`);
+      const result = await Updates.checkForUpdateAsync();
+      if (result.isAvailable) {
+        setUpdateStatus('更新あり。DL中...');
+        await Updates.fetchUpdateAsync();
+        setUpdateStatus('DL完了。再起動で反映');
+      } else {
+        setUpdateStatus((prev) => `${prev} / 最新`);
+      }
+    } catch (e: any) {
+      setUpdateStatus(`エラー: ${e.message ?? String(e)}`.slice(0, 60));
+    }
+  };
 
   const saveTodos = async (items: Todo[]) => {
     await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(items));
@@ -131,7 +154,10 @@ export default function App() {
     <SafeAreaView style={styles.container}>
       <StatusBar style="dark" />
       <View style={styles.header}>
-        <Text style={styles.title}>Simple Todo</Text>
+        <View>
+          <Text style={styles.title}>Simple Todo</Text>
+          <Text style={styles.updateStatus}>{updateStatus}</Text>
+        </View>
         {todos.length > 0 && (
           <Text style={styles.counter}>
             {completedCount}/{todos.length} 完了
@@ -198,6 +224,11 @@ const styles = StyleSheet.create({
   counter: {
     fontSize: 14,
     color: '#888',
+  },
+  updateStatus: {
+    fontSize: 10,
+    color: '#aaa',
+    marginTop: 2,
   },
   inputContainer: {
     flexDirection: 'row',
